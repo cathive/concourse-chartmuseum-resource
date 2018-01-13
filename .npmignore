@@ -1,0 +1,10 @@
+/node_modules/
+/test
+/*.tgz
+/*.ts
+/.dockerignore
+/.editorconfig
+/.npmignore
+/.travis.yml
+/tsconfig.json
+/Dockerfile

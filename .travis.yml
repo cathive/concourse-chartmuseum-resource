@@ -1,0 +1,25 @@
+---
+
+# Using Travis CI to build a resource for Concourse CI seems a bit odd, I assume.
+
+dist: trusty
+sudo: required
+
+language: bash
+
+addons:
+  sonarcloud:
+    organization: "cathive"
+
+services:
+  - docker
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+
+script:
+  - docker build -t cathive/concourse-chartmuseum-resource:latest .
+
+matrix:
+  fast_finish: true

@@ -1,0 +1,7 @@
+*.iml
+/.idea/
+/.scannerwork/
+
+/node_modules/
+/*.js
+/*.tgz

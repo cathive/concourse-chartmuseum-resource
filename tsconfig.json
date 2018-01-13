@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+      "strictNullChecks": true,
+      "target": "es2015",
+      "module": "commonjs",
+      "lib": [
+        "es2015"
+      ],
+      "types": [
+        "node",
+        "node-fetch"
+      ]
+    },
+    "exclude": [
+      "node_modules/**"
+    ]
+  }
