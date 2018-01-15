@@ -32,8 +32,12 @@ const stderr = process.stderr;
     charts = charts.filter(chart => semver.satisfies(chart.version, versionRange));
   }
 
-  // Sort all charts by version (descending).
-  charts = charts.sort((chart1, chart2) => semver.compare(chart2.version, chart1.version));
+  // TODO If the chart has been re-deployed it might sport the same version number with a changed digest
+  // If the digest has been changed, we'll have to add the chart with the OLD digest directly before the
+  // chart with the new digest in our list to satisfy the contract that is required by the check action.
+
+  // Sort all charts by version (ascending).
+  charts = charts.sort((chart1, chart2) => semver.compare(chart1.version, chart2.version));
 
   const response: CheckResponse = charts.map(chart => ({
     version: chart.version,
