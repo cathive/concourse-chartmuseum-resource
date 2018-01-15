@@ -31,7 +31,7 @@ Add a new resource type to your Concourse CI pipeline:
 * `basic_auth_username`: Optional username to be used if your ChartMuseum is username/password protected.
   If provided, the paramter `basic_auth_password` must also be specified.
 
-  * `basic_auth_username`: Optional password to be used if your ChartMuseum is username/password protected.
+* `basic_auth_username`: Optional password to be used if your ChartMuseum is username/password protected.
   If provided, the paramter `basic_auth_username` must also be specified.
 
 ## Behavior
@@ -55,7 +55,7 @@ unless overwritten by the parameter `target_basename`.
 #### "in" Parameters
 
 * `target_basename`: Optional parameter that can be used to change the name of the
-  output files that will be written.
+  input files that will be written.
 
 ### out: Push an updated version of the Helm chart
 

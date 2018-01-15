@@ -7,7 +7,7 @@ import * as util from "util";
 import fetch from "node-fetch";
 
 import { retrieveRequestFromStdin, createFetchHeaders } from "./index";
-import { CheckRequest, InRequest, InResponse } from "./index";
+import { InRequest, InResponse } from "./index";
 
 // Promisified funtions from the Node.js standard library.
 const writeFile = util.promisify(fs.writeFile);

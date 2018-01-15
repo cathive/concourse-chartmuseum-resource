@@ -24,4 +24,4 @@ RUN npm -s install -g /tmp/cathive-concourse-chartmuseum-resource.tgz \
 && ln -sf /usr/local/bin/concourse-chartmuseum-resource-out /opt/resource/out
 ENV PATH="/usr/local/bin:/usr/bin:/bin"
 LABEL maintainer="headcr4sh@gmail.com" \
-      version="0.1.0"
+      version="0.2.0-pre"

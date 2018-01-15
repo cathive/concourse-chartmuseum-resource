@@ -29,17 +29,20 @@ export function createFetchHeaders<R extends CheckRequest>(request: R): Headers 
     return headers;
 }
 
-export interface CheckRequest {
+interface Request {
     source: {
-    server_url: string
-    chart_name: string
-    version_range?: string
-    basic_auth_username?: string
-    basic_auth_password?: string
+        server_url: string
+        chart_name: string
+        version_range?: string
+        basic_auth_username?: string
+        basic_auth_password?: string
     }
+}
+
+export interface CheckRequest extends Request {
     version?: {
-    version: string
-    digest: string
+        version: string
+        digest: string
     }
 }
 
@@ -67,4 +70,16 @@ export interface InResponse {
         name: string
         value: string
     }[]
+}
+
+export interface OutRequest extends Request {
+    params: {
+        sign?: boolean
+        key_data?: string
+        version?: string
+        version_file?: string
+    }
+}
+
+export interface OutResponse extends InResponse {
 }
