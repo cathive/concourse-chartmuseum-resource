@@ -52,10 +52,10 @@ const writeFile = util.promisify(fs.writeFile);
     }
 
     const tgzResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.version}.tgz`, { headers: headers });
-    writeFile(path.resolve(destination, `${targetBasename}.tgz`), await tgzResp.buffer());
+    await writeFile(path.resolve(destination, `${targetBasename}.tgz`), await tgzResp.buffer());
 
     const provResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.version}.tgz.prov`, { headers: headers });
-    writeFile(path.resolve(destination, `${targetBasename}.tgz.prov`), await provResp.buffer());
+    await writeFile(path.resolve(destination, `${targetBasename}.tgz.prov`), await provResp.buffer());
 
     await writeFile(path.resolve(destination, `${targetBasename}.json`), JSON.stringify(chartJson));
     process.stdout.write(JSON.stringify(response, null, 2));
