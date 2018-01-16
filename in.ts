@@ -47,7 +47,7 @@ const writeFile = util.promisify(fs.writeFile);
             { name: "description", value: chartJson.description }, 
             { name: "appVersion", value: chartJson.appVersion },
             { name: "home", value: chartJson.home },
-            { name: "tillerVersion", value: chartJson.tillerVersion },
+            { name: "tillerVersion", value: chartJson.tillerVersion }
         ]
     }
 

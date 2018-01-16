@@ -59,4 +59,7 @@ unless overwritten by the parameter `target_basename`.
 
 ### out: Push an updated version of the Helm chart
 
-Not (yet) implemented.
+#### "out" Parameters
+
+* `chart_file`: *Required* Path to the tgz-archive that contains the chart to be
+  uploaded.

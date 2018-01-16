@@ -74,6 +74,7 @@ export interface InResponse {
 
 export interface OutRequest extends Request {
     params: {
+        chart_file: string
         sign?: boolean
         key_data?: string
         version?: string
