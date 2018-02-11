@@ -7,6 +7,8 @@ import * as util from "util";
 import * as semver from "semver";
 
 import fetch from "node-fetch";
+import * as tmp from "tmp";
+import * as yaml from "yamljs";
 
 import { retrieveRequestFromStdin, createFetchHeaders } from "./index";
 import { OutRequest, OutResponse } from "./index";
@@ -14,6 +16,21 @@ import { OutRequest, OutResponse } from "./index";
 const exec = util.promisify(child_process.exec);
 const lstat = util.promisify(fs.lstat);
 const readFile = util.promisify(fs.readFile);
+
+async function createTmpDir(): Promise<{ path: string, cleanupCallback: Function }> {
+    return new Promise<{ path: string, cleanupCallback: Function }>((resolve, reject) => {
+        tmp.dir((err, path, cleanupCallback) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({
+                    path: path,
+                    cleanupCallback: cleanupCallback
+                });
+            }
+        });
+    });
+}
 
 export default async function out() {
 
@@ -48,10 +65,34 @@ export default async function out() {
         }
     }
 
-    const chartFile = path.resolve(request.params.chart_file);
-    const chartFileStat = await lstat(chartFile);
-    if (!chartFileStat.isFile()) {
-        process.stderr.write(`Chart file (${chartFile}) not found.\n`)
+    const chartLocation = path.resolve(request.params.chart);
+    let chartFile: string;
+    const chartFileStat = await lstat(chartLocation);
+    if (chartFileStat.isDirectory()) {
+        const chartInfo = yaml.load(path.resolve(chartLocation, "Chart.yaml"));
+        const tmpDir = await createTmpDir(); // TODO(b.jung) The cleanup callback is not yet used.
+        const cmd = [
+            "helm",
+            "package",
+            "--destination",
+            tmpDir.path
+        ];
+        if (version != null) {
+            cmd.push("--version", version);
+        }
+        try {
+            await exec(cmd.join(" "));
+        } catch (e) {
+            // TODO(b.jung) The error message is silently swallowed. Probably not what we want. :-/
+            process.stderr.write(`Packaging of chart file failed.\n`);
+            process.exit(121);
+        }
+        chartFile = path.resolve(tmpDir.path, `${chartInfo.name}-${chartInfo.version}.tgz`);
+    } else if (chartFileStat.isFile()) {
+        chartFile = chartLocation;
+    } else {
+        chartFile = "/dev/null"; // Ugly workaround to silence the TypeScript compiler.
+        process.stderr.write(`Chart file (${chartLocation}) not found.\n`)
         process.exit(110);
     }
 

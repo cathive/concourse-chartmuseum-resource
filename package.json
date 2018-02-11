@@ -5,12 +5,16 @@
     "main": "./index.js",
     "dependencies": {
         "node-fetch": "^2.0.0",
-        "semver": "^5.5.0"
+        "semver": "^5.5.0",
+        "tmp": "^0.0.33",
+        "yamljs": "^0.3.0"
     },
     "devDependencies": {
         "@types/node": "^9.4.5",
         "@types/node-fetch": "^1.6.7",
         "@types/semver": "^5.5.0",
+        "@types/tmp": "^0.0.33",
+        "@types/yamljs": "^0.2.30",
         "typescript": "^2.7.1"
     },
     "scripts": {

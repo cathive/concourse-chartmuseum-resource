@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Included Helm binary has been updated to v2.8.1.
 
+### Changed
+
+- The parameter `chart_file` has been renamed to just `chart`.
+  It can now either point to a packaged chart (.tgz file) or a directory
+  that contains an unpackaged chart.
+
 ## [0.2.0] - 2018-01-16
 
 ### Added

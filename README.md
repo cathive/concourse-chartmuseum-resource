@@ -61,5 +61,6 @@ unless overwritten by the parameter `target_basename`.
 
 #### "out" Parameters
 
-* `chart_file`: *Required* Path to the tgz-archive that contains the chart to be
-  uploaded.
+* `chart`: *Required* Path to the tgz-archive or a folder that contains the chart to be
+  uploaded. If a folder has been specified instead of a tgz file, this folder will be
+  packaged prior to uploading it's contents to the ChartMuseum instance.
