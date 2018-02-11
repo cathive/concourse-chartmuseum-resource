@@ -6,7 +6,7 @@ import * as path from "path";
 import * as util from "util";
 import * as semver from "semver";
 
-import fetch from "node-fetch";
+import fetch, { Body, Response } from "node-fetch";
 import * as tmp from "tmp";
 import * as yaml from "yamljs";
 
@@ -17,8 +17,8 @@ const exec = util.promisify(child_process.exec);
 const lstat = util.promisify(fs.lstat);
 const readFile = util.promisify(fs.readFile);
 
-async function createTmpDir(): Promise<{ path: string, cleanupCallback: Function }> {
-    return new Promise<{ path: string, cleanupCallback: Function }>((resolve, reject) => {
+async function createTmpDir(): Promise<{ path: string, cleanupCallback: () => void }> {
+    return new Promise<{ path: string, cleanupCallback: () => void }>((resolve, reject) => {
         tmp.dir((err, path, cleanupCallback) => {
             if (err) {
                 reject(err);
@@ -32,7 +32,9 @@ async function createTmpDir(): Promise<{ path: string, cleanupCallback: Function
     });
 }
 
-export default async function out() {
+export default async function out(): Promise<{data: Object, cleanupCallback: (() => void) | undefined }> {
+
+    let cleanupCallback: (() => void) | undefined = undefined;
 
     // Determine build path and decend into it.
     if (process. argv. length != 3) {
@@ -66,11 +68,13 @@ export default async function out() {
     }
 
     const chartLocation = path.resolve(request.params.chart);
+    process.stderr.write(`Processing chart at "${chartLocation}"...\n`)
     let chartFile: string;
-    const chartFileStat = await lstat(chartLocation);
+    let chartFileStat = await lstat(chartLocation);
     if (chartFileStat.isDirectory()) {
         const chartInfo = yaml.load(path.resolve(chartLocation, "Chart.yaml"));
-        const tmpDir = await createTmpDir(); // TODO(b.jung) The cleanup callback is not yet used.
+        const tmpDir = await createTmpDir();
+        cleanupCallback = tmpDir.cleanupCallback;
         const cmd = [
             "helm",
             "package",
@@ -80,21 +84,28 @@ export default async function out() {
         if (version != null) {
             cmd.push("--version", version);
         }
+        cmd.push(chartLocation);
         try {
+            process.stderr.write("Performing \"helm package\"...\n");
             await exec(cmd.join(" "));
         } catch (e) {
-            // TODO(b.jung) The error message is silently swallowed. Probably not what we want. :-/
+            if (e.stderr != null) {
+                process.stderr.write(`${e.stderr}\n`);
+            }
             process.stderr.write(`Packaging of chart file failed.\n`);
             process.exit(121);
         }
         chartFile = path.resolve(tmpDir.path, `${chartInfo.name}-${chartInfo.version}.tgz`);
+        chartFileStat = await lstat(chartFile);
     } else if (chartFileStat.isFile()) {
         chartFile = chartLocation;
     } else {
-        chartFile = "/dev/null"; // Ugly workaround to silence the TypeScript compiler.
         process.stderr.write(`Chart file (${chartLocation}) not found.\n`)
         process.exit(110);
+        throw new Error(); // Tricking the typescript compiler.
     }
+
+    process.stderr.write(`Inspecting chart file: "${chartFile}"...\n`)
 
     try {
         const result = await exec(`helm inspect ${chartFile}`);
@@ -117,12 +128,22 @@ export default async function out() {
     headers.append("Content-length", String(chartFileStat.size))
     headers.append("Content-Disposition", `attachment; filename="${path.basename(chartFile)}"`)
 
-    const chart = await readFile(chartFile);
-    const postResult = await fetch(`${request.source.server_url}api/charts`, {
-        method: "POST",
-        headers: headers,
-        body: fs.createReadStream(chartFile)
-    });
+    process.stderr.write(`Uploading chart file: "${chartFile}"...\n`);
+    const readStream = fs.createReadStream(chartFile);
+    let postResult: Response;
+    try {
+        const postUrl = `${request.source.server_url}api/charts`;
+        postResult = await fetch(postUrl, {
+            method: "POST",
+            headers: headers,
+            body: readStream
+        });
+    } catch (e) {
+        process.stderr.write("Upload of chart file failed.\n");
+        process.stderr.write(e);
+        process.exit(124);
+        throw e; // Tricking the typescript compiler.
+    }
 
     const postResultJson = await postResult.json();
     if (postResultJson.error != null) {
@@ -168,17 +189,23 @@ export default async function out() {
         ]
     };
 
-    process.stdout.write(JSON.stringify(response));
-    process.exit(0);
-    
-
+    return {
+        data: response,
+        cleanupCallback: cleanupCallback
+    }
 }
 
 (async () => {
     try {
-        await out();
+        const result = await out();
+        if (typeof result.cleanupCallback === "function") {
+            process.stderr.write("Cleaning up...\n");
+            //result.cleanupCallback(); // TODO(b.jung) The cleanup callbck causes an error. :-(
+        }
+        process.stdout.write(JSON.stringify(result.data));
+        process.exit(0);
     } catch (e) {
-        process.stderr.write("An unexpected error occured.\n");
+        process.stderr.write("\n\nAn unexpected error occured.\n");
         process.stderr.write(e);
         process.exit(1);
     }

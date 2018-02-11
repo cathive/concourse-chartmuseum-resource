@@ -1,0 +1,5 @@
+# Avoid package-in-package ...
+*.tgz
+
+# Ignore input files
+*.in
