@@ -1,6 +1,6 @@
 FROM node:9.4.0 as builder
 RUN apt-get -y update && apt-get -y install curl gzip tar unzip
-ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.7.2-linux-amd64.tar.gz"
+ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.8.1-linux-amd64.tar.gz"
 ADD ${HELM_DOWNLOAD_URL} /tmp/helm.tar.gz
 RUN mkdir -p /data
 WORKDIR /data
