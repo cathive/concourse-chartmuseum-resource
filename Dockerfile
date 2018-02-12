@@ -14,6 +14,7 @@ WORKDIR /src
 RUN npm -s install && npm -s run build && npm -s test && npm -s pack && mv cathive-concourse-chartmuseum-resource-*.tgz /data/cathive-concourse-chartmuseum-resource.tgz
 
 FROM node:9.5.0-alpine
+RUN apk add --no-cache gnupg
 COPY --from=builder "/data/helm" "/usr/local/bin/helm"
 COPY --from=builder "/data/cathive-concourse-chartmuseum-resource.tgz" "/tmp/cathive-concourse-chartmuseum-resource.tgz"
 RUN npm -s install -g /tmp/cathive-concourse-chartmuseum-resource.tgz \

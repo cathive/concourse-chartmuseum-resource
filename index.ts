@@ -77,6 +77,8 @@ export interface OutRequest extends Request {
         chart: string
         sign?: boolean
         key_data?: string
+        key_file?: string
+        key_passphrase?: string
         version?: string
         version_file?: string
     }

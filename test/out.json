@@ -1,0 +1,12 @@
+{
+  "source": {
+    "server_url": "http://localhost:8080/",
+    "chart_name": "nocode"
+  },
+  "params": {
+    "chart": "./test/charts/nocode/",
+    "sign": true,
+    "key_file": "./test/example-gpg-key.asc",
+    "key_passphrase": "nocodenoworries"
+  }
+}

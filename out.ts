@@ -15,6 +15,7 @@ import { OutRequest, OutResponse } from "./index";
 
 const exec = util.promisify(child_process.exec);
 const lstat = util.promisify(fs.lstat);
+const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 
 async function createTmpDir(): Promise<{ path: string, cleanupCallback: () => void }> {
@@ -32,6 +33,44 @@ async function createTmpDir(): Promise<{ path: string, cleanupCallback: () => vo
     });
 }
 
+async function importGpgKey(keyFile: string, passphrase?: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        let importResult = "";
+        const importProcess = child_process.spawn("gpg", [
+            "--batch",
+            "--import",
+            keyFile
+        ]);
+        if (passphrase != null) {
+            importProcess.stdin.write(passphrase);
+        }
+        importProcess.stdin.end();
+        importProcess.stderr.on("data", data => {
+            importResult += data;
+        });
+        importProcess.stdout.on("data", data => {
+            process.stderr.write(data);
+        });
+        importProcess.on("close", code => {
+            if (code != 0) {
+                reject(new Error(`gpg import returned exit code ${code}.`));
+            } else {
+                const keyIdLine = importResult.split(/\r?\n/).find(line => line.includes("secret key imported"));
+                if (keyIdLine == null) {
+                    reject("Unable to determine Key ID after successful import: Line with key ID not found.");
+                } else {
+                    const match = /^gpg\:\ key\ (.*?)\: secret\ key\ imported$/.exec(keyIdLine);
+                    if (match == null) {
+                        reject("Unable to determine Key ID after successful import: Regex match failure.")
+                    } else {
+                        resolve(match[1]);
+                    }
+                }
+            }
+        });
+    });
+}
+
 export default async function out(): Promise<{data: Object, cleanupCallback: (() => void) | undefined }> {
 
     let cleanupCallback: (() => void) | undefined = undefined;
@@ -44,8 +83,16 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
     const root = path.resolve(process.argv[2]);
     process.chdir(root);
 
-    const request = await retrieveRequestFromStdin<OutRequest>();
-
+    let request: OutRequest;
+    try {
+        request = await retrieveRequestFromStdin<OutRequest>();
+    } catch (e) {
+        process.stderr.write("Unable to retrieve JSON data from stdin.\n");
+        process.stderr.write(e);
+        process.exit(502)
+        throw(e);
+    }
+    
     let headers = createFetchHeaders(request);
 
     // If either params.version or params.version_file have been specified,
@@ -81,6 +128,27 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
             "--destination",
             tmpDir.path
         ];
+        if (request.params.sign === true) {
+            const keyData = request.params.key_data;
+            let keyFile = request.params.key_file;
+            let keyId: string;
+            if (keyData == null && keyFile == null) {
+                process.stderr.write("Either key_data or key_file must be specified, when 'sign' is set to true.");
+                process.exit(332)
+            }
+            if (keyData != null) {
+                keyFile = path.resolve(tmpDir.path, "gpg-key.asc");
+                await writeFile(keyFile, keyData);
+            }
+            process.stderr.write(`Importing GPG private key: "${keyFile}"...\n`);
+            keyId = await importGpgKey(keyFile as string, request.params.key_passphrase);
+            process.stderr.write(`GPG key imported successfully. Key ID: "${keyId}".\n`);
+            cmd.push("--sign");
+            cmd.push("--key");
+            cmd.push(keyId);
+            cmd.push("--keyring");
+            cmd.push(path.resolve(process.env["HOME"] as string, ".gnupg", "secring.gpg"));
+        }
         if (version != null) {
             cmd.push("--version", version);
         }
@@ -115,7 +183,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
         const inspectionResult = result.stdout;
         const versionLine = inspectionResult.split(/\r?\n/).find(line => line.startsWith("version:"));
         if (versionLine == null) {
-            process.stderr.write("Unable to parse version information from Helm Chart inspection result.");
+            process.stderr.write("Unable to parse version information from Helm Chart inspection result.\n");
             process.exit(121);
         } else {
             version = versionLine.split(/version:\s*/)[1]
