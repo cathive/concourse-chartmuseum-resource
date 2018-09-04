@@ -163,7 +163,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
             process.stderr.write(`Packaging of chart file failed.\n`);
             process.exit(121);
         }
-        chartFile = path.resolve(tmpDir.path, `${chartInfo.name}-${chartInfo.version}.tgz`);
+        chartFile = path.resolve(tmpDir.path, `${chartInfo.name}-${version != null ? version : chartInfo.version}.tgz`);
         chartFileStat = await lstat(chartFile);
     } else if (chartFileStat.isFile()) {
         chartFile = chartLocation;

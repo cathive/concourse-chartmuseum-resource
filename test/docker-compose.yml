@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  chartmuseum:
+    container_name: chartmuseum
+    hostname: chartmuseum
+    domainname: local
+    image: "chartmuseum/chartmuseum:latest"
+    restart: always
+    volumes:
+    - chart_storage:/storage
+    environment:
+      DEBUG: "1"
+      PORT: "8080"
+      STORAGE: "local"
+      STORAGE_LOCAL_ROOTDIR: "/storage"
+      ALLOW_OVERWRITE: "true"
+    ports:
+    - "127.0.0.1:8080:8080"
+
+volumes:
+  chart_storage: # Local

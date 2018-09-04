@@ -1,21 +1,21 @@
 {
     "private": true,
     "name": "@cathive/concourse-chartmuseum-resource",
-    "version": "0.3.0-pre",
+    "version": "0.3.0",
     "main": "./index.js",
     "dependencies": {
-        "node-fetch": "^2.0.0",
-        "semver": "^5.5.0",
+        "node-fetch": "^2.2.0",
+        "semver": "^5.5.1",
         "tmp": "^0.0.33",
         "yamljs": "^0.3.0"
     },
     "devDependencies": {
-        "@types/node": "^9.4.5",
-        "@types/node-fetch": "^1.6.7",
+        "@types/node": "^10.9.4",
+        "@types/node-fetch": "^2.1.2",
         "@types/semver": "^5.5.0",
         "@types/tmp": "^0.0.33",
         "@types/yamljs": "^0.2.30",
-        "typescript": "^2.7.1"
+        "typescript": "^3.0.3"
     },
     "scripts": {
         "build": "tsc",
