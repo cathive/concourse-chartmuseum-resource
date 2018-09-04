@@ -24,5 +24,6 @@ RUN npm -s install -g /tmp/cathive-concourse-chartmuseum-resource.tgz \
 && ln -sf /usr/local/bin/concourse-chartmuseum-resource-in /opt/resource/in \
 && ln -sf /usr/local/bin/concourse-chartmuseum-resource-out /opt/resource/out
 ENV PATH="/usr/local/bin:/usr/bin:/bin"
+RUN helm init --client-only
 LABEL maintainer="headcr4sh@gmail.com" \
       version="0.3.0-pre"
