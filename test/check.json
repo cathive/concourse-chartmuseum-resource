@@ -1,0 +1,10 @@
+{
+    "source": {
+      "server_url": "http://localhost:8080/",
+      "chart_name": "nocode",
+      "version_range": "*"
+    },
+    "params": {
+    }
+  }
+  

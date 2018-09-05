@@ -15,7 +15,7 @@ const writeFile = util.promisify(fs.writeFile);
 (async () => {
 
     // Determine destination path.
-    if (process. argv. length != 3) {
+    if (process.argv.length != 3) {
         process.stderr.write(`Expected exactly one argument (destination), got ${process.argv.length - 2}.`);
         process.exit(2);
     }
