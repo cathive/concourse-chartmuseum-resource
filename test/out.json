@@ -6,7 +6,7 @@
   },
   "params": {
     "chart": "./test/charts/nocode/",
-    "sign": false,
+    "sign": true,
     "key_file": "./test/example-gpg-key.asc",
     "key_passphrase": "nocodenoworries",
     "version_file": "./test/version-override.txt"

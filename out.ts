@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+import * as os from "os";
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import * as util from "util";
 import * as semver from "semver";
+import * as rimraf from "rimraf";
 
 import fetch, { Body, Response } from "node-fetch";
 import * as tmp from "tmp";
@@ -17,6 +19,8 @@ const exec = util.promisify(child_process.exec);
 const lstat = util.promisify(fs.lstat);
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
+const mkdtemp = util.promisify(fs.mkdtemp);
+const deltree = util.promisify(rimraf);
 
 async function createTmpDir(): Promise<{ path: string, cleanupCallback: () => void }> {
     return new Promise<{ path: string, cleanupCallback: () => void }>((resolve, reject) => {
@@ -33,13 +37,15 @@ async function createTmpDir(): Promise<{ path: string, cleanupCallback: () => vo
     });
 }
 
-async function importGpgKey(keyFile: string, passphrase?: string): Promise<string> {
+async function importGpgKey(gpgHome: string, keyFile: string, passphrase?: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         let importResult = "";
         const importProcess = child_process.spawn("gpg", [
             "--batch",
+            "--homedir",
+            `"${path.resolve(gpgHome)}"`,
             "--import",
-            keyFile
+            `"${path.resolve(keyFile)}"`
         ]);
         if (passphrase != null) {
             importProcess.stdin.write(passphrase);
@@ -140,14 +146,30 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
                 keyFile = path.resolve(tmpDir.path, "gpg-key.asc");
                 await writeFile(keyFile, keyData);
             }
-            process.stderr.write(`Importing GPG private key: "${keyFile}"...\n`);
-            keyId = await importGpgKey(keyFile as string, request.params.key_passphrase);
-            process.stderr.write(`GPG key imported successfully. Key ID: "${keyId}".\n`);
-            cmd.push("--sign");
-            cmd.push("--key");
-            cmd.push(keyId);
-            cmd.push("--keyring");
-            cmd.push(path.resolve(process.env["HOME"] as string, ".gnupg", "secring.gpg"));
+            const gpgHome: string = path.resolve(await mkdtemp(path.resolve(os.tmpdir(), "concourse-gpg-keyring-")));
+            process.stderr.write(`Using new empty temporary GNUPGHOME: "${gpgHome}".\n`)
+            try {
+                process.stderr.write(`Importing GPG private key: "${keyFile}"...\n`);
+                try {
+                    keyId = await importGpgKey(gpgHome, keyFile as string, request.params.key_passphrase);
+                } catch (e) {
+                    process.stderr.write(`Importing of GPG key "${keyFile}" failed.\n`);
+                    throw e;
+                }
+                process.stderr.write(`GPG key imported successfully. Key ID: "${keyId}".\n`);
+                cmd.push("--sign");
+                cmd.push("--key");
+                cmd.push(keyId);
+                cmd.push("--keyring");
+                cmd.push(`"${path.resolve(gpgHome, "secring.gpg")}"`);
+            } catch (e) {
+                process.stderr.write("Signing of chart with GPG private key failed\n");
+                throw e;
+            } finally {
+                process.stderr.write(`Removing temporary GNUPGHOME "${gpgHome}".\n`)
+                await deltree(gpgHome);
+            }
+
         }
         if (version != null) {
             cmd.push("--version", version);
@@ -264,6 +286,10 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
 }
 
 (async () => {
+    process.on("unhandledRejection", err => {
+        process.stderr.write(err);
+        process.exit(-1);
+      });
     try {
         const result = await out();
         if (typeof result.cleanupCallback === "function") {

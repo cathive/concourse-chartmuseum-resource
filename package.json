@@ -5,6 +5,7 @@
     "main": "./index.js",
     "dependencies": {
         "node-fetch": "^2.2.0",
+        "rimraf": "^2.6.2",
         "semver": "^5.5.1",
         "tmp": "^0.0.33",
         "yamljs": "^0.3.0"
@@ -12,6 +13,7 @@
     "devDependencies": {
         "@types/node": "^10.9.4",
         "@types/node-fetch": "^2.1.2",
+        "@types/rimraf": "^2.0.2",
         "@types/semver": "^5.5.0",
         "@types/tmp": "^0.0.33",
         "@types/yamljs": "^0.2.30",
