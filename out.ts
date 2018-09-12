@@ -229,17 +229,22 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
             body: readStream
         });
     } catch (e) {
-        process.stderr.write("Upload of chart file failed.\n");
+        process.stderr.write("Upload of chart file has failed.\n");
         process.stderr.write(e);
         process.exit(124);
         throw e; // Tricking the typescript compiler.
+    }
+
+    if (postResult.status != 200) {
+        process.stderr.write(`An error occured while uploading the chart: "${postResult.status} - ${postResult.statusText}".\n`);
+        process.exit(postResult.status);
     }
 
     const postResultJson = await postResult.json();
     if (postResultJson.error != null) {
         process.stderr.write(`An error occured while uploading the chart: "${postResultJson.error}".\n`);
         process.exit(602);
-    } else if (postResultJson.saved != true) {
+    } else if (postResultJson.saved !== true) {
         process.stderr.write(`Helm chart has not been saved. (Return value from server: saved=${postResultJson.saved})\n`)
         process.exit(603)
     }
@@ -289,7 +294,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
     process.on("unhandledRejection", err => {
         process.stderr.write(err);
         process.exit(-1);
-      });
+    });
     try {
         const result = await out();
         if (typeof result.cleanupCallback === "function") {
