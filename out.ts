@@ -115,7 +115,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
     if (version != null && request.source.version_range != null) {
         const versionRange = request.source.version_range;
         if (!semver.satisfies(version, versionRange)) {
-            process.stderr.write(`params.version (${version}) does not satisfy contents or source.version_range (${versionRange}).\n`)
+            process.stderr.write(`params.version (${version}) does not satisfy contents of source.version_range (${versionRange}).\n`)
             process.exit(104);
         }
     }
