@@ -235,7 +235,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
         throw e; // Tricking the typescript compiler.
     }
 
-    if (postResult.status != 200) {
+    if (postResult.status != 201) {
         process.stderr.write(`An error occured while uploading the chart: "${postResult.status} - ${postResult.statusText}".\n`);
         process.exit(postResult.status);
     }
