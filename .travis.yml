@@ -12,14 +12,14 @@ addons:
     organization: "cathive"
 
 services:
-  - docker
+- docker
 
 cache:
   directories:
-    - '$HOME/.sonar/cache'
+  - '$HOME/.sonar/cache'
 
 script:
-  - docker build -t cathive/concourse-chartmuseum-resource:latest .
+- docker build -t cathive/concourse-chartmuseum-resource:latest .
 
 matrix:
   fast_finish: true

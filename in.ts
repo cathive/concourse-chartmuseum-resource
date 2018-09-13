@@ -36,7 +36,7 @@ const writeFile = util.promisify(fs.writeFile);
             targetBasename = request.params.target_basename;
         }
     }
-    
+
     const response: InResponse = {
         version: {
             version: chartJson.version,
@@ -44,7 +44,7 @@ const writeFile = util.promisify(fs.writeFile);
         },
         metadata: [
             { name: "created", value: chartJson.created },
-            { name: "description", value: chartJson.description }, 
+            { name: "description", value: chartJson.description },
             { name: "appVersion", value: chartJson.appVersion },
             { name: "home", value: chartJson.home },
             { name: "tillerVersion", value: chartJson.tillerVersion }

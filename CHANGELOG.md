@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2018-09-13
+
+### Added
+
+- Functionality to sign charts with GnuPG has been officially added and documented.
+
+### Changed
+
+- Error outputs have been improved [#4](https://github.com/cathive/concourse-chartmuseum-resource/issues/4)
+
 ## [0.3.0] - 2018-09-04
 
 ### Fixed

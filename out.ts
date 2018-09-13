@@ -77,12 +77,12 @@ async function importGpgKey(gpgHome: string, keyFile: string, passphrase?: strin
     });
 }
 
-export default async function out(): Promise<{data: Object, cleanupCallback: (() => void) | undefined }> {
+export default async function out(): Promise<{ data: Object, cleanupCallback: (() => void) | undefined }> {
 
     let cleanupCallback: (() => void) | undefined = undefined;
 
     // Determine build path and decend into it.
-    if (process. argv. length != 3) {
+    if (process.argv.length != 3) {
         process.stderr.write(`Expected exactly one argument (root), got ${process.argv.length - 2}.\n`);
         process.exit(102);
     }
@@ -96,9 +96,9 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
         process.stderr.write("Unable to retrieve JSON data from stdin.\n");
         process.stderr.write(e);
         process.exit(502)
-        throw(e);
+        throw (e);
     }
-    
+
     let headers = createFetchHeaders(request);
 
     // If either params.version or params.version_file have been specified,
@@ -264,7 +264,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
         process.exit(710);
     }
     const chartJson = await chartResp.json();
-    
+
     if (version != chartJson.version) {
         process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.version}, expected: ${version}.\n`);
         process.exit(203);
@@ -277,7 +277,7 @@ export default async function out(): Promise<{data: Object, cleanupCallback: (()
         },
         metadata: [
             { name: "created", value: chartJson.created },
-            { name: "description", value: chartJson.description }, 
+            { name: "description", value: chartJson.description },
             { name: "appVersion", value: chartJson.appVersion },
             { name: "home", value: chartJson.home },
             { name: "tillerVersion", value: chartJson.tillerVersion },
