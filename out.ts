@@ -222,7 +222,10 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     const readStream = fs.createReadStream(chartFile);
     let postResult: Response;
     try {
-        const postUrl = `${request.source.server_url}api/charts`;
+        let postUrl = `${request.source.server_url}api/charts`;
+        if (request.params.force) {
+            postUrl += "?force=true"
+        }
         postResult = await fetch(postUrl, {
             method: "POST",
             headers: headers,

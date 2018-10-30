@@ -81,6 +81,7 @@ export interface OutRequest extends Request {
         key_passphrase?: string
         version?: string
         version_file?: string
+        force?: boolean
     }
 }
 

@@ -68,6 +68,11 @@ unless overwritten by the parameter `target_basename`.
   uploaded. If a folder has been specified instead of a tgz file, this folder will be
   packaged prior to uploading it's contents to the ChartMuseum instance.
 
+* `force`: Optional parameter that can be used to force the upload of the chart,
+  even if the version to be uploaded does already exist on the server. Enforcement
+  only works, if the ChartMuseum server has *not* been started with the
+  `--disable-force-overwrite` flag, though.
+
 * `version`: Optional parameter that can be used to override the "version" field in the
   chart's `Chart.yaml` file. If the override version is stored in a file, you can use the
   parameter `version_file` instead.
