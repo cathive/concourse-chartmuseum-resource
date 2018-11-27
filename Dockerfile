@@ -1,19 +1,19 @@
-FROM node:10.12.0 as builder
+FROM node:10.13.0 as builder
 RUN apt-get -y update && apt-get -y install curl gzip tar unzip
-ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz"
-ADD ${HELM_DOWNLOAD_URL} /tmp/helm.tar.gz
+ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz"
+RUN curl -s -j -k -L "${HELM_DOWNLOAD_URL}" > /tmp/helm.tar.gz
+RUN echo "02a4751586d6a80f6848b58e7f6bd6c973ffffadc52b4c06652db7def02773a1  /tmp/helm.tar.gz" | sha256sum -c
 RUN mkdir -p /data
 WORKDIR /data
 RUN gunzip -c "/tmp/helm.tar.gz" | tar -xf - \
 && mv "/data/linux-amd64/helm" "/data/helm" \
 && rm -f "/tmp/helm.tar.gz" \
 && rm -rf "/tmp/linux-amd64"
-RUN ls /data
 COPY . /src
 WORKDIR /src
 RUN npm -s install && npm -s run build && npm -s test && npm -s pack && mv cathive-concourse-chartmuseum-resource-*.tgz /data/cathive-concourse-chartmuseum-resource.tgz
 
-FROM node:10.12.0-alpine
+FROM node:10.13.0-alpine
 RUN apk add --no-cache gnupg ca-certificates
 COPY --from=builder "/data/helm" "/usr/local/bin/helm"
 COPY --from=builder "/data/cathive-concourse-chartmuseum-resource.tgz" "/tmp/cathive-concourse-chartmuseum-resource.tgz"
