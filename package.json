@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@cathive/concourse-chartmuseum-resource",
-    "version": "0.4.1-pre",
+    "version": "0.4.2",
     "main": "./index.js",
     "dependencies": {
         "node-fetch": "^2.2.0",

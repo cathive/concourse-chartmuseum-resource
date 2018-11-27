@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2018-11-27
+
+### Changed
+
+- Use HTTP basic auth headers when fetching charts
+
+### Updated
+
+- Node.js runtime has been updated to v10.13.0
+- Included Helm binary has been updated to v2.11.0.
+
 ## [0.4.1] - 2018-10-30
 
 ### Added
