@@ -11,3 +11,4 @@ development of this project by submitting bug reports, providing patches or
 otherwise helped out where needed.
 
 * Jan-Philip Loos <maxdaten@gmail.com>
+* Daniel Nordstrøm Carlsen <daniel.n.carlsen@gmail.com>
