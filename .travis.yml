@@ -5,7 +5,7 @@
 dist: trusty
 sudo: required
 
-language: bash
+language: javascript
 
 addons:
   sonarcloud:
