@@ -47,7 +47,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Node.js runtime has been updated to v10.9.0
 - Included Helm binary has been updated to v2.10.0.
-- All NPM (dev/runtime) dependencies have been updated to their respective latest versions
+- All NPM (dev/runtime) dependencies have been updated to their respective latest
+  versions
 
 ### Changed
 
@@ -64,8 +65,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Chart re-deployments are now handled correctly and the `check` action is being triggered
-  if only the digest of a chart (and not it's version) has been changed
+- Chart re-deployments are now handled correctly and the `check` action is being
+  triggered if only the digest of a chart (and not it's version) has been changed
 
 ## [0.1.1] - 2018-01-15
 
@@ -77,4 +78,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- First public version. Implementation of the `check` and `in` actions have been done so far.
+- First public version. Implementation of the `check` and `in` actions have been
+  done so far.

@@ -1,4 +1,4 @@
-FROM node:10.13.0 as builder
+FROM node:11.8.0 as builder
 RUN apt-get -y update && apt-get -y install curl gzip tar unzip
 ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz"
 RUN curl -s -j -k -L "${HELM_DOWNLOAD_URL}" > /tmp/helm.tar.gz
@@ -13,7 +13,7 @@ COPY . /src
 WORKDIR /src
 RUN npm -s install && npm -s run build && npm -s test && npm -s pack && mv cathive-concourse-chartmuseum-resource-*.tgz /data/cathive-concourse-chartmuseum-resource.tgz
 
-FROM node:10.13.0-alpine
+FROM node:11.8.0-alpine
 RUN apk add --no-cache gnupg ca-certificates
 COPY --from=builder "/data/helm" "/usr/local/bin/helm"
 COPY --from=builder "/data/cathive-concourse-chartmuseum-resource.tgz" "/tmp/cathive-concourse-chartmuseum-resource.tgz"
@@ -27,7 +27,7 @@ ENV PATH="/usr/local/bin:/usr/bin:/bin"
 RUN helm init --client-only
 LABEL maintainer="Benjamin P. Jung <headcr4sh@gmail.com>" \
       version="0.4.3-pre" \
-      org.concourse-ci.target-version="4.2.1" \
+      org.concourse-ci.target-version="4.2.2" \
       org.concourse-ci.resource-id="chartmuseum" \
       org.concourse-ci.resource-name="ChartMuseum package management" \
       org.concourse-ci.resource-homepage="https://github.com/cathive/concourse-chartmuseum-resource"
