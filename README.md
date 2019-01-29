@@ -1,6 +1,7 @@
 # [ChartMuseum](https://github.com/kubernetes-helm/chartmuseum/) Resource for [Concourse CI](https://concourse.ci/)
 
 Fetches, verifies and publishes Helm Charts from a running ChartMuseum instance.
+[Harbor](https://goharbor.io/) works as well, since it uses ChartMuseum under the hood.
 
 This resource works probably best in conjunction with the [Helm resource](https://github.com/linkyard/concourse-helm-resource)
 which can be used to perform Helm deployments into Kubernetes clusters.
