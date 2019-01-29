@@ -1,8 +1,8 @@
 FROM node:11.8.0 as builder
 RUN apt-get -y update && apt-get -y install curl gzip tar unzip
-ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz"
+ARG HELM_DOWNLOAD_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.12.3-linux-amd64.tar.gz"
 RUN curl -s -j -k -L "${HELM_DOWNLOAD_URL}" > /tmp/helm.tar.gz
-RUN echo "02a4751586d6a80f6848b58e7f6bd6c973ffffadc52b4c06652db7def02773a1  /tmp/helm.tar.gz" | sha256sum -c
+RUN echo "3425a1b37954dabdf2ba37d5d8a0bd24a225bb8454a06f12b115c55907809107  /tmp/helm.tar.gz" | sha256sum -c
 RUN mkdir -p /data
 WORKDIR /data
 RUN gunzip -c "/tmp/helm.tar.gz" | tar -xf - \
@@ -26,7 +26,7 @@ RUN npm -s install -g /tmp/cathive-concourse-chartmuseum-resource.tgz \
 ENV PATH="/usr/local/bin:/usr/bin:/bin"
 RUN helm init --client-only
 LABEL maintainer="Benjamin P. Jung <headcr4sh@gmail.com>" \
-      version="0.4.3-pre" \
+      version="0.5.0" \
       org.concourse-ci.target-version="4.2.2" \
       org.concourse-ci.resource-id="chartmuseum" \
       org.concourse-ci.resource-name="ChartMuseum package management" \
