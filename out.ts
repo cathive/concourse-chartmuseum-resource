@@ -297,7 +297,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
 
 (async () => {
     process.on("unhandledRejection", err => {
-        process.stderr.write(err);
+        process.stderr.write(err != null ? err.toString() : "UNKNOWN ERROR");
         process.exit(-1);
     });
     try {
