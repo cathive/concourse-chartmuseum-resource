@@ -8,7 +8,7 @@ which can be used to perform Helm deployments into Kubernetes clusters.
 
 ## Requirements
 
-* A running ChartMuseum instance (this resource has been tested with v0.7.1)
+* A running ChartMuseum instance (this resource has been tested with v0.9.0)
 
 ## Installation
 
