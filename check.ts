@@ -33,7 +33,7 @@ const stderr = process.stderr;
     }
 
     // Sort all charts by version (ascending).
-    charts = charts.sort((chart1, chart2) => semver.compare(chart1.version, chart2.version));
+    charts.sort((chart1, chart2) => semver.compare(chart1.version, chart2.version));
 
     // If the chart has been re-deployed it might sport the same version number with a changed digest
     // If the digest has been changed, we'll have to add the chart with the OLD digest directly before the
