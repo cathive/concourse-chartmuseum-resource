@@ -15,8 +15,8 @@ which can be used to perform Helm deployments into Kubernetes clusters.
 Add a new resource type to your Concourse CI pipeline:
 
 ```yaml
- resource_types:
- - name: chartmuseum
+resource_types:
+- name: chartmuseum
   type: docker-image
   source:
     repository: cathive/concourse-chartmuseum-resource
@@ -30,7 +30,7 @@ Add a new resource type to your Concourse CI pipeline:
 * `chart_name`: *Required* The name of the chart to operate upon.
 
 * `version_range`: Optional parameter that can be used to specify a (SemVer) version range
-  that must match when checking for new charts, e.g. `=1.2.0`, `^2.0.0`, `~0.2.3` of `*`.
+  that must match when checking for new charts, e.g. `=1.2.0`, `^2.0.0`, `~0.2.3` or `*`.
 
 * `basic_auth_username`: Optional username to be used if your ChartMuseum is username/password protected.
   If provided, the paramter `basic_auth_password` must also be specified.
@@ -66,8 +66,8 @@ unless overwritten by the parameter `target_basename`.
 #### "out" Parameters
 
 * `chart`: *Required* Path to the tgz-archive or a folder that contains the chart to be
-  uploaded. If a folder has been specified instead of a tgz file, this folder will be
-  packaged prior to uploading it's contents to the ChartMuseum instance.
+  uploaded. If a folder has been specified instead of a ".tgz" file, this folder will be
+  packaged up prior to uploading it's contents to the ChartMuseum instance.
 
 * `force`: Optional parameter that can be used to force the upload of the chart,
   even if the version to be uploaded does already exist on the server. Enforcement
@@ -85,12 +85,12 @@ unless overwritten by the parameter `target_basename`.
   GPG key. If set to `true` either `key_data` or `key_file` must be specified as well.
 
 * `key_data`: If `sign` has been set to `true`, this parameter can be used to pass the
-  key that shall be used to sign the chart package.
+  key to be used to sign the chart package.
 
 * `key_file`: If `sign` has been set to `true`, this parameter can be used to pass the
   location of a file that contains the GPG key that shall be used to sign the chart
   package.
 
 * `key_passphrase`: If `sign` has been set to `true` this parameter can be used to
-  specifcy the passphrase that protects the GPG signing key that shall be used to sign
+  specifcy the passphrase that protects the GPG signing key to be used to sign
   the chart package.
