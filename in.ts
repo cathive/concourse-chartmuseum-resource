@@ -26,7 +26,7 @@ const writeFile = util.promisify(fs.writeFile);
     const headers = createFetchHeaders(request);
 
     // Fetch metadata
-    const chartResp = await fetch(`${request.source.server_url}api/charts/${request.source.chart_name}/${request.version.version}`, { headers: headers });
+    const chartResp = await fetch(`${request.source.server_url}/${request.source.chart_name}/${request.version.version}`, { headers: headers });
     const chartJson = await chartResp.json();
 
     // Read params and pre-initialize them with documented default values.

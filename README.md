@@ -25,7 +25,7 @@ resource_types:
 
 ## Source Configuration
 
-* `server_url`: *Required.* The address of the Chartmuseum instance. Must end with a slash.
+* `server_url`: *Required.* The address of the Chartmuseum instance. For chartmuseum, this'll be something like `https://chartmuseum.yourdomain.com/api/charts`. For harbor (which uses chartmuseum but changes the URL), this'll be something like `https://harbor.yourdomain.com/chartrepo` (for all charts) or `https://harbor.yourdomain.com/chartrepo/<project name>` for charts within a specific project.
 
 * `chart_name`: *Required* The name of the chart to operate upon.
 

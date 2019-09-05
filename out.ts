@@ -258,10 +258,10 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
 
     // Fetch Chart that has just been uploaded.
     headers = createFetchHeaders(request); // We need new headers. (Content-Length should be "0" again...)
-    const chartInfoUrl = `${request.source.server_url}api/charts/${request.source.chart_name}/${version}`;
+    const chartInfoUrl = `${request.source.server_url}${request.source.chart_name}/${version}`;
     process.stderr.write(`Fetching chart data from "${chartInfoUrl}"...\n`);
     const chartResp = await fetch(
-        `${request.source.server_url}api/charts/${request.source.chart_name}/${version}`,
+        `${request.source.server_url}${request.source.chart_name}/${version}`,
         { headers: headers });
     if (!chartResp.ok) {
         process.stderr.write("Download of chart information failed.\n")
