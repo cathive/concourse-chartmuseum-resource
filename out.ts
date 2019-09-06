@@ -222,7 +222,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     const readStream = fs.createReadStream(chartFile);
     let postResult: Response;
     try {
-        let postUrl = `${request.source.server_url}api/charts`;
+        let postUrl = `${request.source.server_url}`;
         if (request.params.force) {
             postUrl += "?force=true"
         }
@@ -232,14 +232,14 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
             body: readStream
         });
     } catch (e) {
-        process.stderr.write("Upload of chart file has failed.\n");
+        process.stderr.write(`Upload of chart file to "${request.source.server_url}" has failed.\n`);
         process.stderr.write(e);
         process.exit(124);
         throw e; // Tricking the typescript compiler.
     }
 
     if (postResult.status != 201) {
-        process.stderr.write(`An error occured while uploading the chart: "${postResult.status} - ${postResult.statusText}".\n`);
+        process.stderr.write(`An error occured while uploading the chart to "${request.source.server_url}" : "${postResult.status} - ${postResult.statusText}".\n`);
         process.exit(postResult.status);
     }
 
