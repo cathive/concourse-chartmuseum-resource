@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Introduced the `harbor_api` param to the `out` resource for interacting with the (*quite different*) Harbor API (*although it uses chartmuseum in the backend*)
+- Introduced the `harbor_api` source value for interacting with the (*quite different*) Harbor API (*although it uses chartmuseum in the backend*)
   
 ## [0.7.0] - 2019-08-28
 
