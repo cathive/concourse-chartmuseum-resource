@@ -29,35 +29,65 @@ const writeFile = util.promisify(fs.writeFile);
     const chartResp = await fetch(`${request.source.server_url}/${request.source.chart_name}/${request.version.version}`, { headers: headers });
     const chartJson = await chartResp.json();
 
-    // Read params and pre-initialize them with documented default values.
-    let targetBasename: string = `${chartJson.name}-${chartJson.version}`;
-    if (request.params != null) {
-        if (request.params.target_basename != null) {
-            targetBasename = request.params.target_basename;
+    if (request.source.harbor_api === true) {    
+        // Read params and pre-initialize them with documented default values.
+        let targetBasename: string = `${chartJson.metadata.name}-${chartJson.metadata.version}`;
+        if (request.params != null) {
+            if (request.params.target_basename != null) {
+                targetBasename = request.params.target_basename;
+            }
         }
+
+        const response: InResponse = {
+            version: {
+                version: chartJson.metadata.version,
+                digest: chartJson.metadata.digest
+            },
+            metadata: [
+                { name: "created", value: chartJson.metadata.created },
+                { name: "description", value: chartJson.metadata.description }
+            ]
+        }
+
+        const tgzResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.metadata.version}.tgz`, { headers: headers });
+        await writeFile(path.resolve(destination, `${targetBasename}.tgz`), await tgzResp.buffer());
+
+        const provResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.metadata.version}.tgz.prov`, { headers: headers });
+        await writeFile(path.resolve(destination, `${targetBasename}.tgz.prov`), await provResp.buffer());
+
+        await writeFile(path.resolve(destination, `${targetBasename}.json`), JSON.stringify(chartJson));
+        process.stdout.write(JSON.stringify(response, null, 2));
+    } else {
+        // Read params and pre-initialize them with documented default values.
+        let targetBasename: string = `${chartJson.name}-${chartJson.version}`;
+        if (request.params != null) {
+            if (request.params.target_basename != null) {
+                targetBasename = request.params.target_basename;
+            }
+        }
+
+        const response: InResponse = {
+            version: {
+                version: chartJson.version,
+                digest: chartJson.digest
+            },
+            metadata: [
+                { name: "created", value: chartJson.created },
+                { name: "description", value: chartJson.description },
+                { name: "appVersion", value: chartJson.appVersion },
+                { name: "home", value: chartJson.home },
+                { name: "tillerVersion", value: chartJson.tillerVersion }
+            ]
+        }
+
+        const tgzResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.version}.tgz`, { headers: headers });
+        await writeFile(path.resolve(destination, `${targetBasename}.tgz`), await tgzResp.buffer());
+
+        const provResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.version}.tgz.prov`, { headers: headers });
+        await writeFile(path.resolve(destination, `${targetBasename}.tgz.prov`), await provResp.buffer());
+
+        await writeFile(path.resolve(destination, `${targetBasename}.json`), JSON.stringify(chartJson));
+        process.stdout.write(JSON.stringify(response, null, 2));        
     }
-
-    const response: InResponse = {
-        version: {
-            version: chartJson.version,
-            digest: chartJson.digest
-        },
-        metadata: [
-            { name: "created", value: chartJson.created },
-            { name: "description", value: chartJson.description },
-            { name: "appVersion", value: chartJson.appVersion },
-            { name: "home", value: chartJson.home },
-            { name: "tillerVersion", value: chartJson.tillerVersion }
-        ]
-    }
-
-    const tgzResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.version}.tgz`, { headers: headers });
-    await writeFile(path.resolve(destination, `${targetBasename}.tgz`), await tgzResp.buffer());
-
-    const provResp = await fetch(`${request.source.server_url}charts/${request.source.chart_name}-${chartJson.version}.tgz.prov`, { headers: headers });
-    await writeFile(path.resolve(destination, `${targetBasename}.tgz.prov`), await provResp.buffer());
-
-    await writeFile(path.resolve(destination, `${targetBasename}.json`), JSON.stringify(chartJson));
-    process.stdout.write(JSON.stringify(response, null, 2));
 
 })();
