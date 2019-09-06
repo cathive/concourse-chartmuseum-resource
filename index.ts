@@ -32,6 +32,7 @@ interface Request {
         version_range?: string
         basic_auth_username?: string
         basic_auth_password?: string
+        harbor_api?: boolean        
     }
 }
 

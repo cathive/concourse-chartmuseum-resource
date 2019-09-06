@@ -216,17 +216,17 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         process.exit(120);
     }
 
-    //headers.append("Content-length", String(chartFileStat.size))
-    //headers.append("Content-Disposition", `attachment; filename="${path.basename(chartFile)}"`)
-    //headers.append("Content-Disposition", `form-data; name="chart"; filename="${path.basename(chartFile)}"`)
-    //headers.append("Content-Type","application/gzip")
-
+    var body;
+    if (request.source.harbor_api === true) {
+        // Update for multipart uploads required by harbor API
+        body = new FormData();
+        body.append('chart', fs.createReadStream(chartFile));
+    } else { 
+        headers.append("Content-length", String(chartFileStat.size))
+        headers.append("Content-Disposition", `attachment; filename="${path.basename(chartFile)}"`)
+        body = fs.createReadStream(chartFile);
+    }
     process.stderr.write(`Uploading chart file: "${chartFile}"...\n`);
-    // const readStream = fs.createReadStream(chartFile);
-
-    // Update for multipart uploads required by harbor API
-    var form = new FormData();
-    form.append('chart', fs.createReadStream(chartFile));
 
     let postResult: Response;
     try {
@@ -237,7 +237,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         postResult = await fetch(postUrl, {
             method: "POST",
             headers: headers,
-            body: form
+            body: body
         });
     } catch (e) {
         process.stderr.write(`Upload of chart file to "${request.source.server_url}" has failed.\n`);
@@ -278,27 +278,54 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     }
     const chartJson = await chartResp.json();
 
-    if (version != chartJson.metadata.version) {
-        process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.metadata.version}, expected: ${version}.\n`);
-        process.exit(203);
+    if (request.source.harbor_api === true) {    
+        if (version != chartJson.metadata.version) {
+            process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.metadata.version}, expected: ${version}.\n`);
+            process.exit(203);
+        }
+    } else {
+        if (version != chartJson.version) {
+            process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.version}, expected: ${version}.\n`);
+            process.exit(203);
+        }
     }
 
-    const response: OutResponse = {
-        version: {
-            version: chartJson.metadata.version,
-            digest: chartJson.metadata.digest
-        },
-        metadata: [
-            { name: "created", value: chartJson.metadata.created },
-            { name: "description", value: chartJson.metadata.description },
-            { name: "appVersion", value: chartJson.appVersion }
-        ]
-    };
-
-    return {
-        data: response,
-        cleanupCallback: cleanupCallback
+    if (request.source.harbor_api === true) {
+        const response: OutResponse = {
+            version: {
+                version: chartJson.metadata.version,
+                digest: chartJson.metadata.digest
+            },
+            metadata: [
+                { name: "created", value: chartJson.metadata.created },
+                { name: "description", value: chartJson.metadata.description },
+                { name: "appVersion", value: chartJson.appVersion }
+            ]
+        };
+        return {
+            data: response,
+            cleanupCallback: cleanupCallback
+        }
+    } else {
+        const response: OutResponse = {
+            version: {
+                version: chartJson.version,
+                digest: chartJson.digest
+            },
+            metadata: [
+                { name: "created", value: chartJson.created },
+                { name: "description", value: chartJson.description },
+                { name: "appVersion", value: chartJson.appVersion },
+                { name: "home", value: chartJson.home },
+                { name: "tillerVersion", value: chartJson.tillerVersion },
+            ]
+        };   
+        return {
+            data: response,
+            cleanupCallback: cleanupCallback
+        }     
     }
+
 }
 
 (async () => {

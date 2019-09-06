@@ -25,7 +25,7 @@ resource_types:
 
 ## Source Configuration
 
-* `server_url`: *Required.* The address of the Chartmuseum instance. For chartmuseum, this'll be something like `https://chartmuseum.yourdomain.com/api/charts`. For harbor (which uses chartmuseum but changes the URL), this'll be something like `https://harbor.yourdomain.com/chartrepo` (for all charts) or `https://harbor.yourdomain.com/chartrepo/<project name>` for charts within a specific project.
+* `server_url`: *Required.* The address of the Chartmuseum/Harbor API. For chartmuseum, this'll be something like `https://chartmuseum.yourdomain.com/api/charts`. For harbor (*which uses chartmuseum but changes the API and path*), this'll be something like `https://harbor.yourdomain.com/api/chartrepo/charts` (*for the default "library" project*) or `https://harbor.yourdomain.com/api/chartrepo/<project name>/charts` for other projects.
 
 * `chart_name`: *Required* The name of the chart to operate upon.
 
@@ -37,6 +37,9 @@ resource_types:
 
 * `basic_auth_password`: Optional password to be used if your ChartMuseum is username/password protected.
   If provided, the paramter `basic_auth_username` must also be specified.
+
+* `harbor_api`: Optional, set to `true` use the Harbor API (*which is different enough to the standard ChartMuseum API not to work*) 
+
 
 ## Behavior
 
@@ -94,3 +97,4 @@ unless overwritten by the parameter `target_basename`.
 * `key_passphrase`: If `sign` has been set to `true` this parameter can be used to
   specifcy the passphrase that protects the GPG signing key to be used to sign
   the chart package.
+
