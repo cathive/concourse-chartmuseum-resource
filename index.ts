@@ -7,10 +7,6 @@ export async function retrieveRequestFromStdin<T extends any>(): Promise<T> {
         process.stdin.on("end", async () => {
             try {
                 const json = JSON.parse(inputRaw) as T;
-                if (!json.source.server_url.endsWith("/")) {
-                    // Forgive input errors and append missing slash if the user did not honor the docs.
-                    json.source.server_url = `${json.source.server_url}/`;
-                }
                 resolve(json);
             } catch (e) {
                 reject(e);

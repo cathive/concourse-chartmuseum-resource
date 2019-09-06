@@ -8,7 +8,8 @@
         "rimraf": "^3.0.0",
         "semver": "^6.3.0",
         "tmp": "^0.1.0",
-        "yamljs": "^0.3.0"
+        "yamljs": "^0.3.0",
+        "form-data": "^2.5.1"        
     },
     "devDependencies": {
         "@types/node": "^12.7.2",
