@@ -38,8 +38,7 @@ resource_types:
 * `basic_auth_password`: Optional password to be used if your ChartMuseum is username/password protected.
   If provided, the paramter `basic_auth_username` must also be specified.
 
-* `harbor_api`: Optional, set to `true` use the Harbor API (*which is different enough to the standard ChartMuseum API not to work*) 
-
+* `harbor_api`: Optional, set to `true` use the Harbor API (*which is different enough to the standard ChartMuseum API not to work*)
 
 ## Behavior
 
@@ -97,4 +96,3 @@ unless overwritten by the parameter `target_basename`.
 * `key_passphrase`: If `sign` has been set to `true` this parameter can be used to
   specifcy the passphrase that protects the GPG signing key to be used to sign
   the chart package.
-

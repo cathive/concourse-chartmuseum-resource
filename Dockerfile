@@ -1,4 +1,4 @@
-FROM node:12.9.0 as builder
+FROM node:12.10.0 as builder
 RUN apt-get -y update && apt-get -y install curl gzip tar unzip
 ARG HELM_DOWNLOAD_URL="https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz"
 RUN curl -s -j -k -L "${HELM_DOWNLOAD_URL}" > /tmp/helm.tar.gz
@@ -13,7 +13,7 @@ COPY . /src
 WORKDIR /src
 RUN npm -s install && npm -s run build && npm -s test && npm -s pack && mv cathive-concourse-chartmuseum-resource-*.tgz /data/cathive-concourse-chartmuseum-resource.tgz
 
-FROM node:12.9.0-alpine
+FROM node:12.10.0-alpine
 RUN apk add --no-cache gnupg ca-certificates
 COPY --from=builder "/data/helm" "/usr/local/bin/helm"
 COPY --from=builder "/data/cathive-concourse-chartmuseum-resource.tgz" "/tmp/cathive-concourse-chartmuseum-resource.tgz"

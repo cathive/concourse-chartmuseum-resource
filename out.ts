@@ -9,7 +9,7 @@ import * as semver from "semver";
 import * as rimraf from "rimraf";
 import * as FormData from "form-data";
 
-import fetch, { Body, Response } from "node-fetch";
+import fetch, { Response } from "node-fetch";
 import * as tmp from "tmp";
 import * as yaml from "yamljs";
 
@@ -221,7 +221,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         // Update for multipart uploads required by harbor API
         body = new FormData();
         body.append('chart', fs.createReadStream(chartFile));
-    } else { 
+    } else {
         headers.append("Content-length", String(chartFileStat.size))
         headers.append("Content-Disposition", `attachment; filename="${path.basename(chartFile)}"`)
         body = fs.createReadStream(chartFile);
@@ -278,7 +278,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     }
     const chartJson = await chartResp.json();
 
-    if (request.source.harbor_api === true) {    
+    if (request.source.harbor_api === true) {
         if (version != chartJson.metadata.version) {
             process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.metadata.version}, expected: ${version}.\n`);
             process.exit(203);
@@ -319,11 +319,11 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
                 { name: "home", value: chartJson.home },
                 { name: "tillerVersion", value: chartJson.tillerVersion },
             ]
-        };   
+        };
         return {
             data: response,
             cleanupCallback: cleanupCallback
-        }     
+        }
     }
 
 }

@@ -5,42 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [0.7.1] - 2019-09-06
+## [0.8.0] - 2019-09-09
 
 ### Added
 
-- Introduced the `harbor_api` source value for interacting with the (*quite different*) Harbor API (*although it uses chartmuseum in the backend*)
-  
+- Introduced the `harbor_api` source value for interacting with the (*quite different*)
+  Harbor API (*although it uses ChartmMseum in the backend*).
+
+### Updated
+
+- Node.js runtime has been updated to v12.10.0.
+
 ## [0.7.0] - 2019-08-28
 
 ### Updated
 
-- Node.js runtime has been updated to v12.9.0
-- Included Helm binary has been updated to v2.14.3
+- Node.js runtime has been updated to v12.9.0.
+- Included Helm binary has been updated to v2.14.3.
 
 ## [0.6.0] - 2019-06-16
 
 ### Updated
 
-- Node.js runtime has been updated to v12.4.0
-- Included Helm binary has been updated to v2.14.1
+- Node.js runtime has been updated to v12.4.0.
+- Included Helm binary has been updated to v2.14.1.
 
 ## [0.5.0] - 2019-01-29
 
 ### Updated
 
-- Node.js runtime has been updated to v11.8.0
+- Node.js runtime has been updated to v11.8.0.
 - Included Helm binary has been updated to v2.12.3.
 
 ## [0.4.2] - 2018-11-27
 
 ### Fixed
 
-- Use HTTP basic auth headers when fetching charts
+- Use HTTP basic auth headers when fetching charts.
 
 ### Updated
 
-- Node.js runtime has been updated to v10.13.0
+- Node.js runtime has been updated to v10.13.0.
 - Included Helm binary has been updated to v2.11.0.
 
 ## [0.4.1] - 2018-10-30
@@ -48,7 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Possiblity to force-upload charts even if the version of the chart already
-  exists. (Mitigates issue [5](https://github.com/cathive/concourse-chartmuseum-resource/issues/5))
+  exists. (Mitigates issue [5](https://github.com/cathive/concourse-chartmuseum-resource/issues/5)).
 
 ## [0.4.0] - 2018-09-13
 
@@ -58,13 +63,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Error outputs have been improved [#4](https://github.com/cathive/concourse-chartmuseum-resource/issues/4)
+- Error outputs have been improved [#4](https://github.com/cathive/concourse-chartmuseum-resource/issues/4).
 
 ## [0.3.0] - 2018-09-04
 
 ### Fixed
 
-- `helm init` is now called prior to packaging [#1](https://github.com/cathive/concourse-chartmuseum-resource/issues/1)
+- `helm init` is now called prior to packaging [#1](https://github.com/cathive/concourse-chartmuseum-resource/issues/1).
 
 ### Added
 
@@ -72,10 +77,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Updated
 
-- Node.js runtime has been updated to v10.9.0
+- Node.js runtime has been updated to v10.9.0.
 - Included Helm binary has been updated to v2.10.0.
 - All NPM (dev/runtime) dependencies have been updated to their respective latest
-  versions
+  versions.
 
 ### Changed
 
@@ -88,12 +93,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - `out` resource has been implemented and can be used to directly deploy packaged
-  helm charts in .tgz format to a ChartMuseum
+  helm charts in .tgz format to a ChartMuseum.
 
 ### Fixed
 
 - Chart re-deployments are now handled correctly and the `check` action is being
-  triggered if only the digest of a chart (and not it's version) has been changed
+  triggered if only the digest of a chart (and not it's version) has been changed.
 
 ## [0.1.1] - 2018-01-15
 
