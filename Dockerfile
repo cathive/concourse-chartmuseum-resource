@@ -26,7 +26,7 @@ RUN npm -s install -g /tmp/cathive-concourse-chartmuseum-resource.tgz \
 ENV PATH="/usr/local/bin:/usr/bin:/bin"
 RUN helm init --client-only
 LABEL maintainer="Benjamin P. Jung <headcr4sh@gmail.com>" \
-      version="0.7.0" \
+      version="0.7.1" \
       org.concourse-ci.target-version="5.4.1" \
       org.concourse-ci.resource-id="chartmuseum" \
       org.concourse-ci.resource-name="ChartMuseum package management" \

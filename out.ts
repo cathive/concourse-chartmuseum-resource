@@ -7,6 +7,7 @@ import * as path from "path";
 import * as util from "util";
 import * as semver from "semver";
 import * as rimraf from "rimraf";
+import * as FormData from "form-data";
 
 import fetch, { Body, Response } from "node-fetch";
 import * as tmp from "tmp";
@@ -215,31 +216,38 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         process.exit(120);
     }
 
-    headers.append("Content-length", String(chartFileStat.size))
-    headers.append("Content-Disposition", `attachment; filename="${path.basename(chartFile)}"`)
-
+    var body;
+    if (request.source.harbor_api === true) {
+        // Update for multipart uploads required by harbor API
+        body = new FormData();
+        body.append('chart', fs.createReadStream(chartFile));
+    } else { 
+        headers.append("Content-length", String(chartFileStat.size))
+        headers.append("Content-Disposition", `attachment; filename="${path.basename(chartFile)}"`)
+        body = fs.createReadStream(chartFile);
+    }
     process.stderr.write(`Uploading chart file: "${chartFile}"...\n`);
-    const readStream = fs.createReadStream(chartFile);
+
     let postResult: Response;
     try {
-        let postUrl = `${request.source.server_url}api/charts`;
+        let postUrl = `${request.source.server_url}`;
         if (request.params.force) {
             postUrl += "?force=true"
         }
         postResult = await fetch(postUrl, {
             method: "POST",
             headers: headers,
-            body: readStream
+            body: body
         });
     } catch (e) {
-        process.stderr.write("Upload of chart file has failed.\n");
+        process.stderr.write(`Upload of chart file to "${request.source.server_url}" has failed.\n`);
         process.stderr.write(e);
         process.exit(124);
         throw e; // Tricking the typescript compiler.
     }
 
     if (postResult.status != 201) {
-        process.stderr.write(`An error occured while uploading the chart: "${postResult.status} - ${postResult.statusText}".\n`);
+        process.stderr.write(`An error occured while uploading the chart to "${request.source.server_url}" : "${postResult.status} - ${postResult.statusText}".\n`);
         process.exit(postResult.status);
     }
 
@@ -258,10 +266,10 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
 
     // Fetch Chart that has just been uploaded.
     headers = createFetchHeaders(request); // We need new headers. (Content-Length should be "0" again...)
-    const chartInfoUrl = `${request.source.server_url}api/charts/${request.source.chart_name}/${version}`;
+    const chartInfoUrl = `${request.source.server_url}/${request.source.chart_name}/${version}`;
     process.stderr.write(`Fetching chart data from "${chartInfoUrl}"...\n`);
     const chartResp = await fetch(
-        `${request.source.server_url}api/charts/${request.source.chart_name}/${version}`,
+        `${request.source.server_url}/${request.source.chart_name}/${version}`,
         { headers: headers });
     if (!chartResp.ok) {
         process.stderr.write("Download of chart information failed.\n")
@@ -270,29 +278,54 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     }
     const chartJson = await chartResp.json();
 
-    if (version != chartJson.version) {
-        process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.version}, expected: ${version}.\n`);
-        process.exit(203);
+    if (request.source.harbor_api === true) {    
+        if (version != chartJson.metadata.version) {
+            process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.metadata.version}, expected: ${version}.\n`);
+            process.exit(203);
+        }
+    } else {
+        if (version != chartJson.version) {
+            process.stderr.write(`Version mismatch in uploaded Helm Chart. Got: ${chartJson.version}, expected: ${version}.\n`);
+            process.exit(203);
+        }
     }
 
-    const response: OutResponse = {
-        version: {
-            version: chartJson.version,
-            digest: chartJson.digest
-        },
-        metadata: [
-            { name: "created", value: chartJson.created },
-            { name: "description", value: chartJson.description },
-            { name: "appVersion", value: chartJson.appVersion },
-            { name: "home", value: chartJson.home },
-            { name: "tillerVersion", value: chartJson.tillerVersion },
-        ]
-    };
-
-    return {
-        data: response,
-        cleanupCallback: cleanupCallback
+    if (request.source.harbor_api === true) {
+        const response: OutResponse = {
+            version: {
+                version: chartJson.metadata.version,
+                digest: chartJson.metadata.digest
+            },
+            metadata: [
+                { name: "created", value: chartJson.metadata.created },
+                { name: "description", value: chartJson.metadata.description },
+                { name: "appVersion", value: chartJson.appVersion }
+            ]
+        };
+        return {
+            data: response,
+            cleanupCallback: cleanupCallback
+        }
+    } else {
+        const response: OutResponse = {
+            version: {
+                version: chartJson.version,
+                digest: chartJson.digest
+            },
+            metadata: [
+                { name: "created", value: chartJson.created },
+                { name: "description", value: chartJson.description },
+                { name: "appVersion", value: chartJson.appVersion },
+                { name: "home", value: chartJson.home },
+                { name: "tillerVersion", value: chartJson.tillerVersion },
+            ]
+        };   
+        return {
+            data: response,
+            cleanupCallback: cleanupCallback
+        }     
     }
+
 }
 
 (async () => {

@@ -1,14 +1,15 @@
 {
     "private": true,
     "name": "@cathive/concourse-chartmuseum-resource",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "main": "./index.js",
     "dependencies": {
         "node-fetch": "^2.6.0",
         "rimraf": "^3.0.0",
         "semver": "^6.3.0",
         "tmp": "^0.1.0",
-        "yamljs": "^0.3.0"
+        "yamljs": "^0.3.0",
+        "form-data": "^2.5.1"        
     },
     "devDependencies": {
         "@types/node": "^12.7.2",
