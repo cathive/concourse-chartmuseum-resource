@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2020-03-09
+
+### Fixed
+
+- Fix Harbor compatiblity (adjust `server_url` for fetching charts).
+  Thanks to [Sam Rees](https://github.com/samrees) for the patch.
+
+### Improved
+
+- Some errors have not been correctly written to stderr but instead lead to uncaught
+  exceptions, whereas the original error message was swallowed which made actual
+  errors and mis-configurations very hard to debug.
+  ([#7](https://github.com/cathive/concourse-chartmuseum-resource/issues/7), [#13](https://github.com/cathive/concourse-chartmuseum-resource/issues/13))
+
+### Updated
+
+- Node.js runtime has been updated to v13.10.1.
+- Helm binary has been updated to v2.16.3.
+
 ## [0.8.0] - 2019-09-09
 
 ### Added
