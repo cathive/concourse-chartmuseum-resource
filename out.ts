@@ -56,7 +56,7 @@ async function importGpgKey(gpgHome: string, keyFile: string, passphrase?: strin
             importResult += data;
         });
         importProcess.stdout.on("data", data => {
-            process.stderr.write(data);
+            process.stderr.write(JSON.stringify(data));
         });
         importProcess.on("close", code => {
             if (code != 0) {
@@ -95,7 +95,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         request = await retrieveRequestFromStdin<OutRequest>();
     } catch (e) {
         process.stderr.write("Unable to retrieve JSON data from stdin.\n");
-        process.stderr.write(e);
+        process.stderr.write(JSON.stringify(e));
         process.exit(502)
         throw (e);
     }
@@ -241,7 +241,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         });
     } catch (e) {
         process.stderr.write(`Upload of chart file to "${request.source.server_url}" has failed.\n`);
-        process.stderr.write(e);
+        process.stderr.write(JSON.stringify(JSON.stringify(e)));
         process.exit(124);
         throw e; // Tricking the typescript compiler.
     }
@@ -343,7 +343,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
         process.exit(0);
     } catch (e) {
         process.stderr.write("\n\nAn unexpected error occured.\n");
-        process.stderr.write(e);
+        process.stderr.write(JSON.stringify(e));
         process.exit(1);
     }
 })();
