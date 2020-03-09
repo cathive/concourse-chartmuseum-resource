@@ -13,3 +13,4 @@ otherwise helped out where needed.
 * Daniel Nordstrøm Carlsen &lt;daniel.n.carlsen@gmail.com&gt;
 * David Young <davidy@funkypenguin.co.nz>
 * Jan-Philip Loos &lt;maxdaten@gmail.com&gt;
+* Sam Rees &lt;sam.rees@spothero.com&gt;
