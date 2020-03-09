@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Introduced the `harbor_api` source value for interacting with the (*quite different*)
-  Harbor API (*although it uses ChartmMseum in the backend*).
+  Harbor API (*although it uses ChartmMuseum in the backend*).
 
 ### Updated
 
