@@ -12,6 +12,7 @@ import * as FormData from "form-data";
 import fetch, { Response } from "node-fetch";
 import * as tmp from "tmp";
 import * as yaml from "yamljs";
+import { retry } from 'ts-retry-promise';
 
 import { retrieveRequestFromStdin, createFetchHeaders } from "./index";
 import { OutRequest, OutResponse } from "./index";
@@ -268,9 +269,13 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     headers = createFetchHeaders(request); // We need new headers. (Content-Length should be "0" again...)
     const chartInfoUrl = `${request.source.server_url}/${request.source.chart_name}/${version}`;
     process.stderr.write(`Fetching chart data from "${chartInfoUrl}"...\n`);
-    const chartResp = await fetch(
-        `${request.source.server_url}/${request.source.chart_name}/${version}`,
-        { headers: headers });
+
+    await retry(async () => {
+      const chartResp = await fetch(
+          `${request.source.server_url}/${request.source.chart_name}/${version}`,
+          { headers: headers });
+    }, {backoff: "LINEAR", retries: 3});
+
     if (!chartResp.ok) {
         process.stderr.write("Download of chart information failed.\n")
         process.stderr.write((await chartResp.buffer()).toString());
