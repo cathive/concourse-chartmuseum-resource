@@ -96,3 +96,7 @@ unless overwritten by the parameter `target_basename`.
 * `key_passphrase`: If `sign` has been set to `true` this parameter can be used to
   specifcy the passphrase that protects the GPG signing key to be used to sign
   the chart package.
+
+* `dependency_update`: must be set to `true` if there are any dependencies in the
+   helm chart to be uploaded. This will cause the dependencies to be fetched
+   before the chart is packaged.
