@@ -79,6 +79,7 @@ export interface OutRequest extends Request {
         version?: string
         version_file?: string
         force?: boolean
+        dependency_update?: boolean
     }
 }
 

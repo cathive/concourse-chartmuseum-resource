@@ -23,7 +23,7 @@
     },
     "scripts": {
         "build": "tsc",
-        "test": "echo NO TESTS, YET."
+        "test": "nodejs ./out.js . < test/out.json && nodejs ./out.js . < test/out_with_dependency.json"
     },
     "bin": {
         "concourse-chartmuseum-resource-check": "./check.js",

@@ -136,6 +136,9 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
             "--destination",
             tmpDir.path
         ];
+        if (request.params.dependency_update === true) {
+          cmd.push("--dependency-update");
+        }
         if (request.params.sign === true) {
             const keyData = request.params.key_data;
             let keyFile = request.params.key_file;
@@ -270,11 +273,9 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     const chartInfoUrl = `${request.source.server_url}/${request.source.chart_name}/${version}`;
     process.stderr.write(`Fetching chart data from "${chartInfoUrl}"...\n`);
 
-    await retry(async () => {
-      const chartResp = await fetch(
-          `${request.source.server_url}/${request.source.chart_name}/${version}`,
-          { headers: headers });
-    }, {backoff: "LINEAR", retries: 3});
+    const chartResp = await fetch(
+        `${request.source.server_url}/${request.source.chart_name}/${version}`,
+        { headers: headers });
 
     if (!chartResp.ok) {
         process.stderr.write("Download of chart information failed.\n")
