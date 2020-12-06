@@ -14,3 +14,5 @@ otherwise helped out where needed.
 * David Young <davidy@funkypenguin.co.nz>
 * Jan-Philip Loos &lt;maxdaten@gmail.com&gt;
 * Sam Rees &lt;sam.rees@spothero.com&gt;
+* Vikas Rangarajan &lt;vikas_rangarajan@cable.comcast.com&gt;
+* doughoke &lt;douglass.hoke@gmail.com&gt;

@@ -26,7 +26,7 @@ RUN npm -s install -g /tmp/cathive-concourse-chartmuseum-resource.tgz \
 ENV PATH="/usr/local/bin:/usr/bin:/bin"
 LABEL maintainer="Benjamin P. Jung <headcr4sh@gmail.com>" \
       version="1.0.0" \
-      org.concourse-ci.target-version="6.6.0" \
+      org.concourse-ci.target-version="6.7.2" \
       org.concourse-ci.resource-id="chartmuseum" \
       org.concourse-ci.resource-name="ChartMuseum package management" \
       org.concourse-ci.resource-homepage="https://github.com/cathive/concourse-chartmuseum-resource"

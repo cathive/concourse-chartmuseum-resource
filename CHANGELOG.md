@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2020-12-07
+
+Thanks to all the people who contributed to this release!
+You made v1.0.0 possible, which is now completely based on Helm 3.
+
+### Updated
+
+- Updated to Helm v3
+
+### Added
+
+- A new flag that will fetch dependencies prior to packaging (`dependency_update`) has
+  been added.
+
 ## [0.9.0] - 2020-03-09
 
 ### Fixed
