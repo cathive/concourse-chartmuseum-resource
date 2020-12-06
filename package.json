@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@cathive/concourse-chartmuseum-resource",
-    "version": "1.0.0",
+    "version": "1.0.1-pre",
     "main": "./index.js",
     "dependencies": {
         "form-data": "^3.0.0",
