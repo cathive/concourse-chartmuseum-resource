@@ -203,7 +203,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     process.stderr.write(`Inspecting chart file: "${chartFile}"...\n`)
 
     try {
-        const result = await exec(`helm inspect ${chartFile}`);
+        const result = await exec(`helm inspect chart ${chartFile}`);
         if (result.stderr != null && result.stderr.length > 0) {
             process.stderr.write(`${result.stderr}\n`);
         }
