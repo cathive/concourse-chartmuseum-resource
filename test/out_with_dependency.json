@@ -1,0 +1,13 @@
+{
+    "source": {
+        "server_url": "http://localhost:8080/",
+        "chart_name": "nocode_with_dependency",
+        "version_range": "*"
+    },
+    "params": {
+        "chart": "./test/charts/nocode_with_dependency/",
+        "dependency_update": true,
+        "sign": false,
+        "version_file": "./test/version-override.txt"
+    }
+}
