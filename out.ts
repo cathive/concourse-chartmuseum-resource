@@ -200,7 +200,7 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     process.stderr.write(`Inspecting chart file: "${chartFile}"...\n`)
 
     try {
-        const result = await exec(`helm inspect ${chartFile}`);
+        const result = await exec(`helm inspect chart ${chartFile}`);
         if (result.stderr != null && result.stderr.length > 0) {
             process.stderr.write(`${result.stderr}\n`);
         }
@@ -270,11 +270,10 @@ export default async function out(): Promise<{ data: Object, cleanupCallback: ((
     const chartInfoUrl = `${request.source.server_url}/${request.source.chart_name}/${version}`;
     process.stderr.write(`Fetching chart data from "${chartInfoUrl}"...\n`);
 
-    await retry(async () => {
-      const chartResp = await fetch(
-          `${request.source.server_url}/${request.source.chart_name}/${version}`,
-          { headers: headers });
-    }, {backoff: "LINEAR", retries: 3});
+    // retry won't work as scoped const chartResp is not visible outside block
+    const chartResp = await fetch(
+        `${request.source.server_url}/${request.source.chart_name}/${version}`,
+        { headers: headers });
 
     if (!chartResp.ok) {
         process.stderr.write("Download of chart information failed.\n")
