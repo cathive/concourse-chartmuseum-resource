@@ -4,7 +4,7 @@
     "version": "1.0.1-pre",
     "main": "./index.js",
     "dependencies": {
-        "form-data": "^3.0.0",
+        "form-data": "^3.0.4",
         "node-fetch": "^2.6.1",
         "rimraf": "^3.0.2",
         "semver": "^7.5.2",
